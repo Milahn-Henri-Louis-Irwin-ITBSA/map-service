@@ -1,5 +1,5 @@
-import { ILoggingInfo } from './model/MapInfo';
+import { IMapInfo } from './model/MapInfo';
 
-export const LOGGING_INFO: ILoggingInfo = {
+export const MAP_INFO: IMapInfo = {
   contextPath: '/api',
 };

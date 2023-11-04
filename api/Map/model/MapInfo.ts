@@ -1,3 +1,3 @@
-export interface ILoggingInfo {
+export interface IMapInfo {
   contextPath: string;
 }

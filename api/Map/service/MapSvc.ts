@@ -4,7 +4,7 @@ import { Service } from 'typedi';
 import { Timestamp } from 'firebase-admin/firestore';
 
 @Service()
-export default class LoggingSvc {
+export default class MapSvc {
   private db: DatabaseConnector;
   constructor() {
     this.db = new DatabaseConnector();

@@ -21,6 +21,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "paths": {}
+    "paths": {
+      "tslib" : ["./node_modules/tslib/tslib.d.ts"]
+    }
   }
 }

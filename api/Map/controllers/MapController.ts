@@ -10,40 +10,47 @@ Icon
 Event (policy etc)
 Created at
 */
-import { LOGGING_INFO } from '../MapApiInfo';
+import { MAP_INFO } from '../MapApiInfo';
 import { Service } from 'typedi';
-import LoggingSvc from '../service/LoggingSvc';
+import MapSvc from '../service/MapSvc';
 import { DecodedIdToken } from 'firebase-admin/auth';
-@JsonController(LOGGING_INFO.contextPath + '/logger')
+import type { EventTypes } from '../../../types/types';
+import { events } from '../../../types/consts';
+@JsonController(MAP_INFO.contextPath + '/map')
 @Service()
-export class LoggingController {
-  constructor(public _loggingSvc: LoggingSvc) {}
-  @Post('/log')
+export class MapController {
+  constructor(public _mapSvc: MapSvc) {}
+  @Post('/plot')
   public async submitLog(
     @HeaderParam('Authorization') token: string,
-    @BodyParam('log') log: string,
-    @BodyParam('type') type: string,
-    @BodyParam('written_by') written_by: string,
-    @BodyParam('message') message: string
+    @BodyParam('alertId') alertId: string,
+    @BodyParam('icon') icon: string,
+    @BodyParam('event') event: EventTypes,
   ): Promise<any> {
     try {
-      if (!log) {
-        return Promise.reject({
-          status: 400,
-          message: 'Invalid log',
-        });
+      if (!token) {
+        return Promise.resolve({ error: 'No token provided', status: 401 });
       }
-      // make sure all the body params are present
-      if (!type || !written_by || !message || !token) {
-        return Promise.reject({
-          status: 400,
-          message: 'Missing required body params',
+      if (!alertId) {
+        return Promise.resolve({ error: 'No alertId provided', status: 401 });
+      }
+      if (!icon) {
+        return Promise.resolve({ error: 'No icon provided', status: 401 });
+      }
+      if (!event) {
+        return Promise.resolve({ error: 'No event provided', status: 401 });
+      }
+      if (events.indexOf(event) === -1) {
+        return Promise.resolve({
+          error: 'Invalid event provided',
+          status: 401,
+          possibleEvents: events,
         });
       }
       token = token.split(' ')[1];
 
       const decodedToken: DecodedIdToken | Error =
-        await this._loggingSvc.verifyToken(token);
+        await this._mapSvc.verifyToken(token);
 
       if (decodedToken instanceof Error) {
         return Promise.resolve({
@@ -51,18 +58,17 @@ export class LoggingController {
           message: 'Invalid token',
         });
       }
-      const resp = await this._loggingSvc.submitLog({
-        type,
-        written_by,
-        message,
-        user_uid: decodedToken.uid,
-        response_code: 200,
-      });
-      return Promise.resolve({
-        status: 200,
-        message: 'Log submitted successfully',
-        data: resp,
-      });
+
+      //TODO: Get alert from db. 
+      //TODO: Plot point on map with current time
+      //TODO: Add Icon
+      //TODO: Add log of plotted point and who was the plot initiated from (AlertService/FeedService)
+            
+      // return Promise.resolve({
+      //   status: 200,
+      //   message: 'Location plotted successfully',
+      //   data: resp,
+      // });
     } catch (error) {
       return Promise.reject({
         status: 500,
