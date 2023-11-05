@@ -5,10 +5,12 @@ import {
   HeaderParam,
 } from 'routing-controllers';
 /*
-Geo-point (identifier and con to alert)
-Icon
-Event (policy etc)
-Created at
+Field Name vs FireBase Name
+Geo-point (identifier and con to alert) | coordinates                                   
+Event (policy etc)                      | event
+info (body)                             | info
+Created at                              | created_at
+Creaed by (uid)                         | created_by
 */
 import { LOGGING_INFO } from '../MapApiInfo';
 import { Service } from 'typedi';
