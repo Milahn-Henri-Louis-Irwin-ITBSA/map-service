@@ -71,7 +71,7 @@ export class MapController {
           message: 'Coordinates have already been plotted',
         });
       } else {
-        const response = await this._mapSvc.setAlert({
+        await this._mapSvc.setAlert({
           coordinates,
           event,
           icon,
@@ -79,9 +79,6 @@ export class MapController {
           created_by: decodedToken.uid,
           created_at: Timestamp.now(),
         });
-
-        //Log data to audit using response
-        console.log('Response: ', response);
 
         return Promise.resolve({
           status: 200,
