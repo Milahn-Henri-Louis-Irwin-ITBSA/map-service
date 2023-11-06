@@ -14,7 +14,7 @@ Creaed by (uid)                         | created_by
 */
 import { LOGGING_INFO } from '../MapApiInfo';
 import { Service } from 'typedi';
-import LoggingSvc from '../service/LoggingSvc';
+import LoggingSvc from '../service/MapSvc';
 import { DecodedIdToken } from 'firebase-admin/auth';
 @JsonController(LOGGING_INFO.contextPath + '/logger')
 @Service()
