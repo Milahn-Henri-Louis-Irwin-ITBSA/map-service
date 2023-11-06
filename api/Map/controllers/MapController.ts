@@ -16,6 +16,7 @@ import MapSvc from '../service/MapSvc';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import type { EventTypes } from '../../../types/types';
 import { events } from '../../../types/consts';
+import { Timestamp } from 'firebase-admin/firestore';
 @JsonController(MAP_INFO.contextPath + '/map')
 @Service()
 export class MapController {
@@ -23,16 +24,20 @@ export class MapController {
   @Post('/plot')
   public async submitLog(
     @HeaderParam('Authorization') token: string,
-    @BodyParam('alertId') alertId: string,
-    @BodyParam('icon') icon: string,
+    @BodyParam('coordinates') coordinates: { long: number; lang: number },
+    @BodyParam('icon') icon: String,
     @BodyParam('event') event: EventTypes,
+    @BodyParam('info') info: String
   ): Promise<any> {
     try {
       if (!token) {
         return Promise.resolve({ error: 'No token provided', status: 401 });
       }
-      if (!alertId) {
-        return Promise.resolve({ error: 'No alertId provided', status: 401 });
+      if (!coordinates) {
+        return Promise.resolve({
+          error: 'No coordinates provided',
+          status: 401,
+        });
       }
       if (!icon) {
         return Promise.resolve({ error: 'No icon provided', status: 401 });
@@ -59,16 +64,32 @@ export class MapController {
         });
       }
 
-      //TODO: Get alert from db. 
-      //TODO: Plot point on map with current time
-      //TODO: Add Icon
-      //TODO: Add log of plotted point and who was the plot initiated from (AlertService/FeedService)
-            
-      // return Promise.resolve({
-      //   status: 200,
-      //   message: 'Location plotted successfully',
-      //   data: resp,
-      // });
+      const coordsFound = await this._mapSvc.checkCoordinates(coordinates);
+      if (coordsFound > 0) {
+        return Promise.resolve({
+          status: 409,
+          message: 'Coordinates have already been plotted',
+        });
+      } else {
+        const response = await this._mapSvc.setAlert({
+          coordinates,
+          event,
+          icon,
+          info,
+          created_by: decodedToken.uid,
+          created_at: Timestamp.now(),
+        });
+
+        //Log data to audit using response
+        console.log('Response: ', response);
+
+        return Promise.resolve({
+          status: 200,
+          event,
+          coordinates,
+          info,
+        });
+      }
     } catch (error) {
       return Promise.reject({
         status: 500,

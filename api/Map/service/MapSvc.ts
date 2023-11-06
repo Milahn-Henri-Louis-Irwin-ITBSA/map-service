@@ -1,7 +1,7 @@
 import { DecodedIdToken } from 'firebase-admin/auth';
 import DatabaseConnector from '../../../libs/db/MapDB';
 import { Service } from 'typedi';
-import { Timestamp } from 'firebase-admin/firestore';
+import { MapData } from 'types/types';
 
 @Service()
 export default class MapSvc {
@@ -18,14 +18,11 @@ export default class MapSvc {
     }
   }
 
-  public async submitLog(log: any): Promise<any> {
-    return await this.db.set({
-      created_at: Timestamp.now(),
-      type: log.type,
-      written_by: log.written_by,
-      message: log.message,
-      user_uid: log.user_uid,
-      response_code: log.response_code,
-    });
+  public async checkCoordinates(coordinates: { long: number; lang: number }): Promise<any> {
+    return await this.db.getByCoordinates(coordinates);
+  }
+
+  public async setAlert(mapData: MapData): Promise<any> {
+    return await this.db.set(mapData)
   }
 }
