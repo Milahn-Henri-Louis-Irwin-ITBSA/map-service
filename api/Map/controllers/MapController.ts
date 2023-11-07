@@ -16,7 +16,7 @@ import MapSvc from '../service/MapSvc';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import type { EventTypes } from '../../../types/types';
 import { events } from '../../../types/consts';
-import { Timestamp } from 'firebase-admin/firestore';
+import { Timestamp, GeoPoint } from 'firebase-admin/firestore';
 @JsonController(MAP_INFO.contextPath + '/map')
 @Service()
 export class MapController {
@@ -25,7 +25,6 @@ export class MapController {
   public async submitLog(
     @HeaderParam('Authorization') token: string,
     @BodyParam('coordinates') coordinates: { long: number; lang: number },
-    @BodyParam('icon') icon: String,
     @BodyParam('event') event: EventTypes,
     @BodyParam('info') info: String
   ): Promise<any> {
@@ -39,9 +38,7 @@ export class MapController {
           status: 401,
         });
       }
-      if (!icon) {
-        return Promise.resolve({ error: 'No icon provided', status: 401 });
-      }
+
       if (!event) {
         return Promise.resolve({ error: 'No event provided', status: 401 });
       }
@@ -72,9 +69,8 @@ export class MapController {
         });
       } else {
         await this._mapSvc.setAlert({
-          coordinates,
+          coordinates: new GeoPoint(coordinates.lang, coordinates.long),
           event,
-          icon,
           info,
           created_by: decodedToken.uid,
           created_at: Timestamp.now(),

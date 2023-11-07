@@ -9,11 +9,10 @@ export type EventTypes =
   | 'road'
   | 'other';
 
-  export interface MapData {
-    created_at: Timestamp;
-    coordinates: { long: number; lang: number };
-    created_by: DecodedIdToken['uid'];
-    event: EventTypes;
-    icon: String;
-    info: String;
-  }
+export interface MapData {
+  created_at: Timestamp;
+  coordinates: GeoPoint;
+  created_by: DecodedIdToken['uid'];
+  event: EventTypes;
+  info: String;
+}
