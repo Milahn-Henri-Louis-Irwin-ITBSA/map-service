@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import 'module-alias/register';
-import * as express from 'express';
+import express from 'express';
 import * as bodyParser from 'body-parser';
 import Container from 'typedi';
 import { ENV_CONFIG } from '../app/config';
@@ -12,9 +12,20 @@ import {
   useContainer as routingContainer,
 } from 'routing-controllers';
 import * as http from 'http';
+import cors from 'cors';
 
 const baseDir = __dirname;
 const expressApp = express();
+
+expressApp.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    maxAge: 86400,
+  })
+);
 
 // Handling the DependencyInjection across the entire application
 routingContainer(Container);

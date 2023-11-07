@@ -6,6 +6,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "importHelpers": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
@@ -21,8 +22,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "paths": {
-      "tslib" : ["./node_modules/tslib/tslib.d.ts"]
-    }
+    "paths": {}
   }
 }
