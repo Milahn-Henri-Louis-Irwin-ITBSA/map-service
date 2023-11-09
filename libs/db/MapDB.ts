@@ -47,7 +47,7 @@ class MapDB implements IMapData {
   public async getByCoordinates(coordinates: {
     long: number;
     lang: number;
-  }): Promise<MapData | number | null> {
+  }): Promise<number | null> {
     try {
       const collectionRef: CollectionReference = this.db.collection('map');
       const docRef = await collectionRef
