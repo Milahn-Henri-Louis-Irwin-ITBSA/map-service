@@ -6,16 +6,28 @@
   "author": "milahnmartin <milahnmartin.develop@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsc & nodemon api/app.ts",
-    "prod": "tsc"
+    "dev": "tsc & nodemon api/app.ts | pino-pretty -c -t -o",
+    "prod": "tsc & node dist/api/app.js | pino-pretty -c -t -o",
+    "build": "rm -r dist && tsc"
+  },
+  "_moduleAliases": {
+    "@api": "dist/api",
+    "@libs": "dist/libs",
+    "@app": "dist/app"
   },
   "dependencies": {
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.3",
+    "firebase-admin": "^11.11.0",
     "module-alias": "^2.2.3",
+    "pino-http": "^8.4.0",
+    "pino-pretty": "^10.2.0",
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.10.4",
     "ts-node": "^10.9.1",
